@@ -18,7 +18,7 @@
             <nav class="nav-menu">
                 <a href="#" class="active" data-target="home-view"><i class="fa-solid fa-house"></i> Главная</a>
                 <a href="#" data-target="search-view"><i class="fa-solid fa-magnifying-glass"></i> Поиск</a>
-                <a href="#" data-target="library-view"><i class="fa-solid fa-book"></i> Медиатека</a>
+                <a href="#" data-target="library-view"><i class="fa-solid fa-heart"></i> Любимые треки</a>
             </nav>
         </aside>
 
@@ -51,29 +51,66 @@
                 <div class="playlist-section">
                     <h2>Поиск треков</h2>
                     <div class="search-box-container" style="margin-bottom: 20px;">
-                        <input type="text" id="searchInput" placeholder="Что хочешь включить? Начни вводить..." style="width: 100%; max-width: 400px; padding: 12px 16px; border-radius: 20px; border: none; background-color: #242424; color: #ffffff; font-size: 0.95rem; outline: none;">
+                        <input type="text" id="searchInput" placeholder="Что хочешь включить? Начни вводить...">
                     </div>
                     
                     <div class="track-list" id="searchTrackList" style="margin-bottom: 30px;"></div>
 
                     <!-- Форма добавления трека со SoundCloud -->
-                    <div class="add-track-box" style="background: #181818; padding: 20px; border-radius: 12px; max-width: 500px;">
-                        <h3 style="margin-bottom: 15px; font-size: 1.1rem;"><i class="fa-brands fa-soundcloud"></i> Добавить трек со SoundCloud</h3>
+                    <div class="add-track-box">
+                        <h3><i class="fa-brands fa-soundcloud"></i> Добавить трек со SoundCloud</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <input type="text" id="scTitle" placeholder="Название трека" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
-                            <input type="text" id="scArtist" placeholder="Исполнитель" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
-                            <input type="text" id="scUrl" placeholder="Прямая ссылка на аудио (mp3 / stream URL)" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
-                            <button id="addScTrackBtn" style="padding: 10px; border-radius: 8px; border: none; background: #1ed760; color: #000; font-weight: bold; cursor: pointer; margin-top: 5px;">Добавить в медиатеку</button>
+                            <input type="text" id="scTitle" placeholder="Название трека">
+                            <input type="text" id="scArtist" placeholder="Исполнитель">
+                            <input type="text" id="scUrl" placeholder="Прямая ссылка на аудио (mp3 / stream URL)">
+                            <button id="addScTrackBtn">Добавить в Любимые треки</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Вкладка: Медиатека -->
+            <!-- Вкладка: Любимые треки (Дизайн из примера) -->
             <section id="library-view" class="view-section">
-                <div class="playlist-section">
-                    <h2>Ваша медиатека</h2>
-                    <div class="track-list" id="libraryTrackList" style="margin-top: 15px;"></div>
+                <div class="playlist-hero">
+                    <div class="hero-card-art">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="hero-info">
+                        <span class="playlist-tag">Плейлист</span>
+                        <h1>Любимые треки</h1>
+                        <p id="libraryStats">Forget • 0 треков</p>
+                    </div>
+                </div>
+
+                <div class="playlist-actions">
+                    <button class="big-play-btn" id="playLibraryBtn"><i class="fa-solid fa-play"></i></button>
+                    <i class="fa-solid fa-shuffle action-icon"></i>
+                    <i class="fa-solid fa-circle-arrow-down action-icon"></i>
+                </div>
+
+                <div class="genre-chips">
+                    <button class="chip active">Тьма</button>
+                    <button class="chip">Быстрая музыка</button>
+                    <button class="chip">Грусть</button>
+                    <button class="chip">Агрессия</button>
+                    <button class="chip">Любовь</button>
+                    <button class="chip">Рэп</button>
+                    <button class="chip">Соул</button>
+                    <button class="chip">Эмо</button>
+                </div>
+
+                <!-- Таблица треков в стиле Spotify -->
+                <div class="spotify-table">
+                    <div class="table-header">
+                        <span>#</span>
+                        <span>Название</span>
+                        <span>Альбом</span>
+                        <span>Добавлено</span>
+                        <span><i class="fa-regular fa-clock"></i></span>
+                    </div>
+                    <div id="libraryTableBody" class="table-body">
+                        <!-- Треки будут добавляться сюда -->
+                    </div>
                 </div>
             </section>
         </main>
