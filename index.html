@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamWave Player</title>
+    <title>Xanax.music</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -13,28 +13,52 @@
         <aside class="sidebar">
             <div class="logo">
                 <i class="fa-solid fa-wave-square"></i>
-                <span>StreamWave</span>
+                <span>Xanax.music</span>
             </div>
             <nav class="nav-menu">
-                <a href="#" class="active"><i class="fa-solid fa-house"></i> Главная</a>
-                <a href="#"><i class="fa-solid fa-magnifying-glass"></i> Поиск</a>
-                <a href="#"><i class="fa-solid fa-book"></i> Медиатека</a>
+                <a href="#" class="active" data-target="home-view"><i class="fa-solid fa-house"></i> Главная</a>
+                <a href="#" data-target="search-view"><i class="fa-solid fa-magnifying-glass"></i> Поиск</a>
+                <a href="#" data-target="library-view"><i class="fa-solid fa-book"></i> Медиатека</a>
             </nav>
         </aside>
 
         <!-- Основной контент -->
         <main class="main-content">
             <header>
-                <h1>Добро пожаловать</h1>
+                <h1 id="pageTitle">Главная</h1>
                 <div class="user-profile">
                     <i class="fa-solid fa-user-circle"></i>
                 </div>
             </header>
 
-            <section class="playlist-section">
-                <h2>Популярные треки</h2>
-                <div class="track-list" id="trackList">
-                    <!-- Треки генерируются через JS -->
+            <!-- Вкладка: Главная -->
+            <section id="home-view" class="view-section">
+                <div class="playlist-section">
+                    <h2>Популярные треки</h2>
+                    <div class="track-list" id="trackList">
+                        <!-- Треки генерируются через JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Вкладка: Поиск -->
+            <section id="search-view" class="view-section" style="display: none;">
+                <div class="search-box-container">
+                    <input type="text" id="searchInput" placeholder="Поиск трека или исполнителя...">
+                </div>
+                <div class="playlist-section" style="margin-top: 20px;">
+                    <h2>Результаты поиска</h2>
+                    <div class="track-list" id="searchResultsList">
+                        <!-- Результаты поиска -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Вкладка: Медиатека -->
+            <section id="library-view" class="view-section" style="display: none;">
+                <div class="playlist-section">
+                    <h2>Ваша медиатека</h2>
+                    <p style="color: #b3b3b3; margin-top: 10px;">Здесь будут храниться ваши сохраненные треки и плейлисты.</p>
                 </div>
             </section>
         </main>
