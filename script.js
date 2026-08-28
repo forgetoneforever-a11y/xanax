@@ -28,18 +28,6 @@ let tracks = [
         artist: "Aesthetic",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
         cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
-    },
-    {
-        title: "shadowraze - showdown",
-        artist: "shadowraze",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-        cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300"
-    },
-    {
-        title: "vxv",
-        artist: "zxcursed",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
-        cover: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=300"
     }
 ];
 
@@ -49,8 +37,6 @@ let listenHistory = [];
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
-const searchResultsList = document.getElementById('searchResultsList');
-const searchInput = document.getElementById('searchInput');
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
 const currentCover = document.getElementById('currentCover');
@@ -62,10 +48,6 @@ const durationEl = document.getElementById('duration');
 function renderTracks(container, listToRender) {
     if (!container) return;
     container.innerHTML = '';
-    if (listToRender.length === 0) {
-        container.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ничего не найдено</p>';
-        return;
-    }
     listToRender.forEach((track) => {
         const item = document.createElement('div');
         item.classList.add('track-item');
@@ -80,14 +62,8 @@ function renderTracks(container, listToRender) {
             <i class="fa-solid fa-play"></i>
         `;
         item.addEventListener('click', () => {
-            const originalIndex = tracks.indexOf(track);
-            if (originalIndex !== -1) {
-                loadTrack(originalIndex);
-            } else {
-                tracks.unshift(track);
-                loadTrack(0);
-                renderTracks(trackList, tracks);
-            }
+            const index = tracks.indexOf(track);
+            loadTrack(index);
             playTrack();
         });
         container.appendChild(item);
@@ -214,59 +190,6 @@ navLinks.forEach(link => {
         });
     });
 });
-
-// Умный поиск: локальная база + глобальный Jamendo API
-async function handleSearch(query) {
-    const cleanQuery = query.toLowerCase().trim();
-    
-    if (!cleanQuery) {
-        searchResultsList.innerHTML = '';
-        return;
-    }
-
-    const localResults = tracks.filter(t => 
-        t.title.toLowerCase().includes(cleanQuery) || t.artist.toLowerCase().includes(cleanQuery)
-    );
-
-    if (localResults.length > 0) {
-        renderTracks(searchResultsList, localResults);
-        return;
-    }
-
-    searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ищем в глобальной базе...</p>';
-    
-    try {
-        const clientId = '93498877';
-        const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=15&search=${encodeURIComponent(query)}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data && data.results && data.results.length > 0) {
-            const apiTracks = data.results.map(t => ({
-                title: t.name,
-                artist: t.artist_name,
-                src: t.audio,
-                cover: t.image || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300"
-            }));
-            renderTracks(searchResultsList, apiTracks);
-        } else {
-            searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ничего не найдено</p>';
-        }
-    } catch (error) {
-        searchResultsList.innerHTML = '<p style="color: #ff5555; padding: 10px;">Ничего не найдено</p>';
-    }
-}
-
-let searchTimeout;
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        const query = e.target.value;
-        searchTimeout = setTimeout(() => {
-            handleSearch(query);
-        }, 300);
-    });
-}
 
 // Инициализация при старте
 const homeView = document.getElementById('home-view');
