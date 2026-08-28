@@ -14,3 +14,10 @@
 .search-box-container input:focus {
     border-color: #ffffff;
 }
+/* Управление видимостью вкладок */
+.view-section {
+    display: none;
+}
+.view-section.active-view {
+    display: block !important;
+}
