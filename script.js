@@ -23,6 +23,8 @@ let currentTrackIndex = 0;
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackListEl = document.getElementById('trackList');
+const searchResultsList = document.getElementById('searchResultsList');
+const searchInput = document.getElementById('searchInput');
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
 const currentCover = document.getElementById('currentCover');
@@ -31,9 +33,10 @@ const volumeBar = document.getElementById('volumeBar');
 const currentTimeEl = document.getElementById('currentTime');
 const durationEl = document.getElementById('duration');
 
-function renderTracks() {
-    trackListEl.innerHTML = '';
-    tracks.forEach((track, index) => {
+// Рендер треков в список
+function renderTracks(container, listToRender) {
+    container.innerHTML = '';
+    listToRender.forEach((track, index) => {
         const item = document.createElement('div');
         item.classList.add('track-item');
         item.innerHTML = `
@@ -47,10 +50,11 @@ function renderTracks() {
             <i class="fa-solid fa-play"></i>
         `;
         item.addEventListener('click', () => {
-            loadTrack(index);
+            const originalIndex = tracks.indexOf(track);
+            loadTrack(originalIndex);
             playTrack();
         });
-        trackListEl.appendChild(item);
+        container.appendChild(item);
     });
 }
 
@@ -119,6 +123,38 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Инициализация первого трека при загрузке
+// Логика переключения вкладок (Главная / Поиск / Медиатека)
+const navLinks = document.querySelectorAll('.nav-menu a');
+const views = document.querySelectorAll('.view-section');
+const pageTitle = document.getElementById('pageTitle');
+
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        const targetId = link.getAttribute('data-target');
+        views.forEach(view => {
+            view.style.display = view.id === targetId ? 'block' : 'none';
+        });
+
+        if (targetId === 'home-view') pageTitle.textContent = 'Главная';
+        if (targetId === 'search-view') pageTitle.textContent = 'Поиск';
+        if (targetId === 'library-view') pageTitle.textContent = 'Медиатека';
+    });
+});
+
+// Живой поиск
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = tracks.filter(t => 
+        t.title.toLowerCase().includes(query) || t.artist.toLowerCase().includes(query)
+    );
+    renderTracks(searchResultsList, filtered);
+});
+
+// Инициализация
 loadTrack(0);
-renderTracks();
+renderTracks(trackList, tracks);
+renderTracks(searchResultsList, tracks);
