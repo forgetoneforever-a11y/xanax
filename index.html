@@ -38,19 +38,15 @@
             <!-- Вкладка: Главная -->
             <section id="home-view" class="view-section active-view">
                 <h2>Недавние</h2>
-                <div class="quick-grid" id="historyGrid">
-                    <!-- История прослушивания заполняется динамически -->
-                </div>
+                <div class="quick-grid" id="historyGrid"></div>
 
                 <div class="playlist-section" style="margin-top: 30px;">
                     <h2>С чего начать</h2>
-                    <div class="track-list" id="trackList">
-                        <!-- Треки подгружаются из скрипта -->
-                    </div>
+                    <div class="track-list" id="trackList"></div>
                 </div>
             </section>
 
-            <!-- Вкладка: Поиск с живым фильтром -->
+            <!-- Вкладка: Поиск и добавление треков -->
             <section id="search-view" class="view-section">
                 <div class="playlist-section">
                     <h2>Поиск треков</h2>
@@ -58,8 +54,17 @@
                         <input type="text" id="searchInput" placeholder="Что хочешь включить? Начни вводить..." style="width: 100%; max-width: 400px; padding: 12px 16px; border-radius: 20px; border: none; background-color: #242424; color: #ffffff; font-size: 0.95rem; outline: none;">
                     </div>
                     
-                    <div class="track-list" id="searchTrackList">
-                        <!-- Результаты поиска -->
+                    <div class="track-list" id="searchTrackList" style="margin-bottom: 30px;"></div>
+
+                    <!-- Форма добавления трека со SoundCloud -->
+                    <div class="add-track-box" style="background: #181818; padding: 20px; border-radius: 12px; max-width: 500px;">
+                        <h3 style="margin-bottom: 15px; font-size: 1.1rem;"><i class="fa-brands fa-soundcloud"></i> Добавить трек со SoundCloud</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <input type="text" id="scTitle" placeholder="Название трека" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
+                            <input type="text" id="scArtist" placeholder="Исполнитель" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
+                            <input type="text" id="scUrl" placeholder="Прямая ссылка на аудио (mp3 / stream URL)" style="padding: 10px; border-radius: 8px; border: none; background: #242424; color: #fff; outline: none;">
+                            <button id="addScTrackBtn" style="padding: 10px; border-radius: 8px; border: none; background: #1ed760; color: #000; font-weight: bold; cursor: pointer; margin-top: 5px;">Добавить в медиатеку</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -68,7 +73,7 @@
             <section id="library-view" class="view-section">
                 <div class="playlist-section">
                     <h2>Ваша медиатека</h2>
-                    <p style="color: #b3b3b3; margin-top: 10px;">Здесь будут храниться ваши сохраненные плейлисты.</p>
+                    <div class="track-list" id="libraryTrackList" style="margin-top: 15px;"></div>
                 </div>
             </section>
         </main>
