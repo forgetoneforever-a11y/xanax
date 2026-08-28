@@ -16,7 +16,6 @@ body {
     height: calc(100vh - 90px);
 }
 
-/* Боковая панель */
 .sidebar {
     width: 240px;
     background-color: #000000;
@@ -57,7 +56,6 @@ body {
     color: #ffffff;
 }
 
-/* Основной контент */
 .main-content {
     flex: 1;
     background: linear-gradient(to bottom, #1f1f1f, #121212);
@@ -100,7 +98,6 @@ header {
     cursor: pointer;
 }
 
-/* Переключение вкладок */
 .view-section {
     display: none;
 }
@@ -109,7 +106,6 @@ header {
     display: block;
 }
 
-/* Сетка недавних */
 .quick-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -147,7 +143,6 @@ header {
     text-overflow: ellipsis;
 }
 
-/* Списки треков */
 .playlist-section h2 {
     font-size: 1.5rem;
     margin-bottom: 16px;
@@ -204,7 +199,6 @@ header {
     color: #ffffff;
 }
 
-/* Нижний плеер */
 .player-bar {
     height: 90px;
     background-color: #181818;
