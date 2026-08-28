@@ -37,6 +37,7 @@ let listenHistory = [];
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
+const searchTrackList = document.getElementById('searchTrackList');
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
 const currentCover = document.getElementById('currentCover');
@@ -197,4 +198,5 @@ if (homeView) homeView.classList.add('active-view');
 
 loadTrack(0);
 renderTracks(trackList, tracks);
+renderTracks(searchTrackList, tracks);
 renderHistory();
