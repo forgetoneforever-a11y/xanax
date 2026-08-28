@@ -1,33 +1,15 @@
 let tracks = [
     {
-        title: "Lofi Study Beats",
-        artist: "Chillhop",
+        title: "Slow Down",
+        artist: "dabbackwood",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
         cover: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300"
     },
     {
-        title: "Electronic Vibes",
-        artist: "SynthWave",
+        title: "Hellraisa",
+        artist: "zxcursed",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"
-    },
-    {
-        title: "Ambient Space",
-        artist: "Cosmic Sound",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        cover: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300"
-    },
-    {
-        title: "Midnight Drive",
-        artist: "Retrowave",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-        cover: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300"
-    },
-    {
-        title: "Sunset Chill",
-        artist: "Aesthetic",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-        cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
     }
 ];
 
@@ -38,6 +20,7 @@ const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
 const searchTrackList = document.getElementById('searchTrackList');
+const libraryTrackList = document.getElementById('libraryTrackList');
 const searchInput = document.getElementById('searchInput');
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
@@ -46,6 +29,12 @@ const progressBar = document.getElementById('progressBar');
 const volumeBar = document.getElementById('volumeBar');
 const currentTimeEl = document.getElementById('currentTime');
 const durationEl = document.getElementById('duration');
+
+// Элементы формы добавления SoundCloud
+const scTitleInput = document.getElementById('scTitle');
+const scArtistInput = document.getElementById('scArtist');
+const scUrlInput = document.getElementById('scUrl');
+const addScTrackBtn = document.getElementById('addScTrackBtn');
 
 function renderTracks(container, listToRender) {
     if (!container) return;
@@ -156,7 +145,42 @@ if (searchInput) {
     });
 }
 
-// История прослушивания для верхней сетки на Главной
+// Добавление трека из SoundCloud через форму
+if (addScTrackBtn) {
+    addScTrackBtn.addEventListener('click', () => {
+        const title = scTitleInput.value.trim();
+        const artist = scArtistInput.value.trim();
+        const url = scUrlInput.value.trim();
+
+        if (!title || !artist || !url) {
+            alert('Пожалуйста, заполните все поля!');
+            return;
+        }
+
+        const newTrack = {
+            title: title,
+            artist: artist,
+            src: url,
+            cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300"
+        };
+
+        tracks.push(newTrack);
+        
+        // Очистка полей
+        scTitleInput.value = '';
+        scArtistInput.value = '';
+        scUrlInput.value = '';
+
+        // Перерисовка списков
+        renderTracks(trackList, tracks);
+        renderTracks(searchTrackList, tracks);
+        renderTracks(libraryTrackList, tracks);
+
+        alert('Трек успешно добавлен в медиатеку!');
+    });
+}
+
+// История прослушивания
 function addToHistory(track) {
     listenHistory = listenHistory.filter(t => t.src !== track.src);
     listenHistory.unshift(track);
@@ -218,4 +242,5 @@ if (homeView) homeView.classList.add('active-view');
 loadTrack(0);
 renderTracks(trackList, tracks);
 renderTracks(searchTrackList, tracks);
+renderTracks(libraryTrackList, tracks);
 renderHistory();
