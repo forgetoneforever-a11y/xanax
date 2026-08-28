@@ -50,14 +50,16 @@
                 </div>
             </section>
 
-            <!-- Вкладка: Поиск -->
+            <!-- Вкладка: Поиск с живым фильтром -->
             <section id="search-view" class="view-section">
                 <div class="playlist-section">
-                    <h2>Каталог треков</h2>
-                    <p style="color: #b3b3b3; margin-bottom: 20px; font-size: 0.9rem;">Выбирай треки из списка, они сразу начнут играть в нижнем плеере.</p>
+                    <h2>Поиск треков</h2>
+                    <div class="search-box-container" style="margin-bottom: 20px;">
+                        <input type="text" id="searchInput" placeholder="Что хочешь включить? Начни вводить..." style="width: 100%; max-width: 400px; padding: 12px 16px; border-radius: 20px; border: none; background-color: #242424; color: #ffffff; font-size: 0.95rem; outline: none;">
+                    </div>
                     
                     <div class="track-list" id="searchTrackList">
-                        <!-- Треки для вкладки поиска -->
+                        <!-- Результаты поиска -->
                     </div>
                 </div>
             </section>
