@@ -30,7 +30,7 @@ let tracks = [
         cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
     },
     {
-        title: "Shadowraze - showdown",
+        title: "shadowraze - showdown",
         artist: "shadowraze",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
         cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300"
@@ -160,7 +160,7 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// История прослушивания (сетка сверху)
+// История прослушивания для верхней сетки на Главной
 function addToHistory(track) {
     listenHistory = listenHistory.filter(t => t.src !== track.src);
     listenHistory.unshift(track);
@@ -174,7 +174,7 @@ function renderHistory() {
     historyGrid.innerHTML = '';
     
     if (listenHistory.length === 0) {
-        historyGrid.innerHTML = '<p style="color: #b3b3b3; font-size: 0.9rem; padding: 5px;">Здесь появятся альбомы и треки, которые вы недавно слушали.</p>';
+        historyGrid.innerHTML = '<p style="color: #b3b3b3; font-size: 0.9rem; padding: 5px;">Здесь появятся треки, которые вы недавно слушали.</p>';
         return;
     }
 
@@ -215,7 +215,7 @@ navLinks.forEach(link => {
     });
 });
 
-// Умный поиск: сначала ищет по локальной базе, если пусто — идет в Jamendo API
+// Умный поиск: локальная база + глобальный Jamendo API
 async function handleSearch(query) {
     const cleanQuery = query.toLowerCase().trim();
     
@@ -224,7 +224,6 @@ async function handleSearch(query) {
         return;
     }
 
-    // 1. Ищем в локальной базе
     const localResults = tracks.filter(t => 
         t.title.toLowerCase().includes(cleanQuery) || t.artist.toLowerCase().includes(cleanQuery)
     );
@@ -234,7 +233,6 @@ async function handleSearch(query) {
         return;
     }
 
-    // 2. Если в локальной не нашли, ищем через API
     searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ищем в глобальной базе...</p>';
     
     try {
@@ -270,7 +268,7 @@ if (searchInput) {
     });
 }
 
-// Инициализация
+// Инициализация при старте
 const homeView = document.getElementById('home-view');
 if (homeView) homeView.classList.add('active-view');
 
