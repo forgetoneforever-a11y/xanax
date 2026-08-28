@@ -10,10 +10,42 @@ let tracks = [
         artist: "SynthWave",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"
+    },
+    {
+        title: "Ambient Space",
+        artist: "Cosmic Sound",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        cover: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300"
+    },
+    {
+        title: "Midnight Drive",
+        artist: "Retrowave",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+        cover: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300"
+    },
+    {
+        title: "Sunset Chill",
+        artist: "Aesthetic",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+        cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
+    },
+    {
+        title: "Shadowraze - showdown",
+        artist: "shadowraze",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+        cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300"
+    },
+    {
+        title: "vxv",
+        artist: "zxcursed",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+        cover: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=300"
     }
 ];
 
 let currentTrackIndex = 0;
+let listenHistory = [];
+
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
@@ -52,7 +84,6 @@ function renderTracks(container, listToRender) {
             if (originalIndex !== -1) {
                 loadTrack(originalIndex);
             } else {
-                // Если трек из поиска, временно добавляем его в общий список
                 tracks.unshift(track);
                 loadTrack(0);
                 renderTracks(trackList, tracks);
@@ -70,6 +101,7 @@ function loadTrack(index) {
     currentTitle.textContent = track.title;
     currentArtist.textContent = track.artist;
     currentCover.src = track.cover;
+    addToHistory(track);
 }
 
 function playTrack() {
@@ -128,10 +160,43 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
+// История прослушивания (сетка сверху)
+function addToHistory(track) {
+    listenHistory = listenHistory.filter(t => t.src !== track.src);
+    listenHistory.unshift(track);
+    if (listenHistory.length > 6) listenHistory.pop();
+    renderHistory();
+}
+
+function renderHistory() {
+    const historyGrid = document.getElementById('historyGrid');
+    if (!historyGrid) return;
+    historyGrid.innerHTML = '';
+    
+    if (listenHistory.length === 0) {
+        historyGrid.innerHTML = '<p style="color: #b3b3b3; font-size: 0.9rem; padding: 5px;">Здесь появятся альбомы и треки, которые вы недавно слушали.</p>';
+        return;
+    }
+
+    listenHistory.forEach((track) => {
+        const card = document.createElement('div');
+        card.classList.add('quick-card');
+        card.innerHTML = `
+            <img src="${track.cover}" alt="Cover">
+            <span>${track.title}</span>
+        `;
+        card.addEventListener('click', () => {
+            const index = tracks.indexOf(track);
+            if (index !== -1) loadTrack(index);
+            playTrack();
+        });
+        historyGrid.appendChild(card);
+    });
+}
+
 // Переключение вкладок
 const navLinks = document.querySelectorAll('.nav-menu a');
 const views = document.querySelectorAll('.view-section');
-const pageTitle = document.getElementById('pageTitle');
 
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -147,27 +212,34 @@ navLinks.forEach(link => {
                 view.classList.remove('active-view');
             }
         });
-
-        if (targetId === 'home-view') pageTitle.textContent = 'Главная';
-        if (targetId === 'search-view') pageTitle.textContent = 'Поиск';
-        if (targetId === 'library-view') pageTitle.textContent = 'Медиатека';
     });
 });
 
-// Запрос к Jamendo API для поиска миллионов треков в реальном времени
-async function searchJamendo(query) {
-    if (!query.trim()) {
-        renderTracks(searchResultsList, tracks);
+// Умный поиск: сначала ищет по локальной базе, если пусто — идет в Jamendo API
+async function handleSearch(query) {
+    const cleanQuery = query.toLowerCase().trim();
+    
+    if (!cleanQuery) {
+        searchResultsList.innerHTML = '';
         return;
     }
-    
-    searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ищем музыку в мировой базе...</p>';
+
+    // 1. Ищем в локальной базе
+    const localResults = tracks.filter(t => 
+        t.title.toLowerCase().includes(cleanQuery) || t.artist.toLowerCase().includes(cleanQuery)
+    );
+
+    if (localResults.length > 0) {
+        renderTracks(searchResultsList, localResults);
+        return;
+    }
+
+    // 2. Если в локальной не нашли, ищем через API
+    searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ищем в глобальной базе...</p>';
     
     try {
-        // Публичный клиентский ключ Jamendo API для демонстрации
         const clientId = '93498877';
-        const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=20&search=${encodeURIComponent(query)}`;
-        
+        const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=15&search=${encodeURIComponent(query)}`;
         const response = await fetch(url);
         const data = await response.json();
         
@@ -183,27 +255,25 @@ async function searchJamendo(query) {
             searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ничего не найдено</p>';
         }
     } catch (error) {
-        console.error("Ошибка при поиске музыки:", error);
-        searchResultsList.innerHTML = '<p style="color: #ff5555; padding: 10px;">Ошибка соединения с базой данных</p>';
+        searchResultsList.innerHTML = '<p style="color: #ff5555; padding: 10px;">Ничего не найдено</p>';
     }
 }
 
-// Живой поиск с задержкой (чтобы не спамить запросами при каждом нажатии клавиши)
 let searchTimeout;
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         const query = e.target.value;
         searchTimeout = setTimeout(() => {
-            searchJamendo(query);
-        }, 500);
+            handleSearch(query);
+        }, 300);
     });
 }
 
-// Инициализация при запуске
+// Инициализация
 const homeView = document.getElementById('home-view');
 if (homeView) homeView.classList.add('active-view');
 
 loadTrack(0);
 renderTracks(trackList, tracks);
-renderTracks(searchResultsList, tracks);
+renderHistory();
