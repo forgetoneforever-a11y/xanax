@@ -204,23 +204,6 @@ header {
     color: #ffffff;
 }
 
-/* Поиск */
-.search-box-container input {
-    width: 100%;
-    max-width: 400px;
-    padding: 12px 20px;
-    border-radius: 30px;
-    border: none;
-    background-color: #242424;
-    color: #ffffff;
-    font-size: 1rem;
-    outline: none;
-}
-
-.search-box-container input::placeholder {
-    color: #b3b3b3;
-}
-
 /* Нижний плеер */
 .player-bar {
     height: 90px;
