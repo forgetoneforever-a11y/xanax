@@ -1,17 +1,27 @@
-let tracks = [
+// Загрузка треков из localStorage или дефолтные
+let defaultTracks = [
     {
         title: "Slow Down",
         artist: "dabbackwood",
+        album: "SoundCloud Single",
+        dateAdded: "Только что",
+        duration: "2:15",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
         cover: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300"
     },
     {
         title: "Hellraisa",
         artist: "zxcursed",
+        album: "Reflection",
+        dateAdded: "1 час назад",
+        duration: "1:50",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"
     }
 ];
+
+let savedTracks = localStorage.getItem('xanax_tracks');
+let tracks = savedTracks ? JSON.parse(savedTracks) : defaultTracks;
 
 let currentTrackIndex = 0;
 let listenHistory = [];
@@ -20,8 +30,10 @@ const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
 const searchTrackList = document.getElementById('searchTrackList');
-const libraryTrackList = document.getElementById('libraryTrackList');
+const libraryTableBody = document.getElementById('libraryTableBody');
+const libraryStats = document.getElementById('libraryStats');
 const searchInput = document.getElementById('searchInput');
+
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
 const currentCover = document.getElementById('currentCover');
@@ -30,12 +42,25 @@ const volumeBar = document.getElementById('volumeBar');
 const currentTimeEl = document.getElementById('currentTime');
 const durationEl = document.getElementById('duration');
 
-// Элементы формы добавления SoundCloud
 const scTitleInput = document.getElementById('scTitle');
 const scArtistInput = document.getElementById('scArtist');
 const scUrlInput = document.getElementById('scUrl');
 const addScTrackBtn = document.getElementById('addScTrackBtn');
 
+function saveToLocalStorage() {
+    localStorage.setItem('xanax_tracks', JSON.stringify(tracks));
+}
+
+function renderAll() {
+    renderTracks(trackList, tracks);
+    renderTracks(searchTrackList, tracks);
+    renderLibraryTable(tracks);
+    if (libraryStats) {
+        libraryStats.textContent = `Forget • ${tracks.length} треков`;
+    }
+}
+
+// Рендер обычного списка треков (для главной и поиска)
 function renderTracks(container, listToRender) {
     if (!container) return;
     container.innerHTML = '';
@@ -64,6 +89,41 @@ function renderTracks(container, listToRender) {
             playTrack();
         });
         container.appendChild(item);
+    });
+}
+
+// Рендер таблицы для вкладки "Любимые треки"
+function renderLibraryTable(listToRender) {
+    if (!libraryTableBody) return;
+    libraryTableBody.innerHTML = '';
+
+    if (listToRender.length === 0) {
+        libraryTableBody.innerHTML = '<p style="color: #b3b3b3; font-size: 0.9rem; padding: 10px;">Плейлист пуст</p>';
+        return;
+    }
+
+    listToRender.forEach((track, index) => {
+        const row = document.createElement('div');
+        row.classList.add('table-row');
+        row.innerHTML = `
+            <span>${index + 1}</span>
+            <div class="col-title">
+                <img src="${track.cover}" alt="Cover">
+                <div>
+                    <h4>${track.title}</h4>
+                    <p>${track.artist}</p>
+                </div>
+            </div>
+            <span>${track.album || 'SoundCloud'}</span>
+            <span>${track.dateAdded || 'Только что'}</span>
+            <span>${track.duration || '2:30'}</span>
+        `;
+        row.addEventListener('click', () => {
+            const realIndex = tracks.indexOf(track);
+            loadTrack(realIndex);
+            playTrack();
+        });
+        libraryTableBody.appendChild(row);
     });
 }
 
@@ -145,7 +205,7 @@ if (searchInput) {
     });
 }
 
-// Добавление трека из SoundCloud через форму
+// Добавление трека из SoundCloud и сохранение
 if (addScTrackBtn) {
     addScTrackBtn.addEventListener('click', () => {
         const title = scTitleInput.value.trim();
@@ -160,23 +220,22 @@ if (addScTrackBtn) {
         const newTrack = {
             title: title,
             artist: artist,
+            album: "SoundCloud Release",
+            dateAdded: "Только что",
+            duration: "2:45",
             src: url,
             cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300"
         };
 
         tracks.push(newTrack);
+        saveToLocalStorage();
+        renderAll();
         
-        // Очистка полей
         scTitleInput.value = '';
         scArtistInput.value = '';
         scUrlInput.value = '';
 
-        // Перерисовка списков
-        renderTracks(trackList, tracks);
-        renderTracks(searchTrackList, tracks);
-        renderTracks(libraryTrackList, tracks);
-
-        alert('Трек успешно добавлен в медиатеку!');
+        alert('Трек успешно добавлен и сохранен!');
     });
 }
 
@@ -240,7 +299,5 @@ const homeView = document.getElementById('home-view');
 if (homeView) homeView.classList.add('active-view');
 
 loadTrack(0);
-renderTracks(trackList, tracks);
-renderTracks(searchTrackList, tracks);
-renderTracks(libraryTrackList, tracks);
+renderAll();
 renderHistory();
