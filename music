@@ -1,0 +1,9 @@
+let tracks = [
+    {
+        title: "Твое название трека",
+        artist: "zxcursed",
+        src: "https://username.github.io/repo-name/music/nazvanie-track.mp3",
+        cover: "https://username.github.io/repo-name/music/cover.jpg"
+    },
+    // Другие твои треки...
+];
