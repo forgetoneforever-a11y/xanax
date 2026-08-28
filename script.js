@@ -38,6 +38,7 @@ const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const trackList = document.getElementById('trackList');
 const searchTrackList = document.getElementById('searchTrackList');
+const searchInput = document.getElementById('searchInput');
 const currentTitle = document.getElementById('currentTitle');
 const currentArtist = document.getElementById('currentArtist');
 const currentCover = document.getElementById('currentCover');
@@ -49,6 +50,12 @@ const durationEl = document.getElementById('duration');
 function renderTracks(container, listToRender) {
     if (!container) return;
     container.innerHTML = '';
+    
+    if (listToRender.length === 0) {
+        container.innerHTML = '<p style="color: #b3b3b3; font-size: 0.9rem; padding: 10px;">Ничего не найдено</p>';
+        return;
+    }
+
     listToRender.forEach((track) => {
         const item = document.createElement('div');
         item.classList.add('track-item');
@@ -135,6 +142,18 @@ function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// Живой поиск
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const filtered = tracks.filter(track => 
+            track.title.toLowerCase().includes(query) || 
+            track.artist.toLowerCase().includes(query)
+        );
+        renderTracks(searchTrackList, filtered);
+    });
 }
 
 // История прослушивания для верхней сетки на Главной
