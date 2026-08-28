@@ -1,4 +1,4 @@
-const tracks = [
+let tracks = [
     {
         title: "Lofi Study Beats",
         artist: "Chillhop",
@@ -10,24 +10,6 @@ const tracks = [
         artist: "SynthWave",
         src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
         cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300"
-    },
-    {
-        title: "Ambient Space",
-        artist: "Cosmic Sound",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        cover: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300"
-    },
-    {
-        title: "Midnight Drive",
-        artist: "Retrowave",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-        cover: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300"
-    },
-    {
-        title: "Sunset Chill",
-        artist: "Aesthetic",
-        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-        cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300"
     }
 ];
 
@@ -67,7 +49,14 @@ function renderTracks(container, listToRender) {
         `;
         item.addEventListener('click', () => {
             const originalIndex = tracks.indexOf(track);
-            loadTrack(originalIndex);
+            if (originalIndex !== -1) {
+                loadTrack(originalIndex);
+            } else {
+                // Если трек из поиска, временно добавляем его в общий список
+                tracks.unshift(track);
+                loadTrack(0);
+                renderTracks(trackList, tracks);
+            }
             playTrack();
         });
         container.appendChild(item);
@@ -165,14 +154,49 @@ navLinks.forEach(link => {
     });
 });
 
-// Живой поиск
+// Запрос к Jamendo API для поиска миллионов треков в реальном времени
+async function searchJamendo(query) {
+    if (!query.trim()) {
+        renderTracks(searchResultsList, tracks);
+        return;
+    }
+    
+    searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ищем музыку в мировой базе...</p>';
+    
+    try {
+        // Публичный клиентский ключ Jamendo API для демонстрации
+        const clientId = '93498877';
+        const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${clientId}&format=json&limit=20&search=${encodeURIComponent(query)}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data && data.results && data.results.length > 0) {
+            const apiTracks = data.results.map(t => ({
+                title: t.name,
+                artist: t.artist_name,
+                src: t.audio,
+                cover: t.image || "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300"
+            }));
+            renderTracks(searchResultsList, apiTracks);
+        } else {
+            searchResultsList.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ничего не найдено</p>';
+        }
+    } catch (error) {
+        console.error("Ошибка при поиске музыки:", error);
+        searchResultsList.innerHTML = '<p style="color: #ff5555; padding: 10px;">Ошибка соединения с базой данных</p>';
+    }
+}
+
+// Живой поиск с задержкой (чтобы не спамить запросами при каждом нажатии клавиши)
+let searchTimeout;
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const filtered = tracks.filter(t => 
-            t.title.toLowerCase().includes(query) || t.artist.toLowerCase().includes(query)
-        );
-        renderTracks(searchResultsList, filtered);
+        clearTimeout(searchTimeout);
+        const query = e.target.value;
+        searchTimeout = setTimeout(() => {
+            searchJamendo(query);
+        }, 500);
     });
 }
 
