@@ -25,26 +25,35 @@
         <!-- Основной контент -->
         <main class="main-content">
             <header>
-                <h1 id="pageTitle">Главная</h1>
+                <div class="filter-chips">
+                    <button class="chip active">Все</button>
+                    <button class="chip">Музыка</button>
+                    <button class="chip">Подкасты</button>
+                </div>
                 <div class="user-profile">
                     <i class="fa-solid fa-user-circle"></i>
                 </div>
             </header>
 
             <!-- Вкладка: Главная -->
-            <section id="home-view" class="view-section">
-                <div class="playlist-section">
-                    <h2>Популярные треки</h2>
+            <section id="home-view" class="view-section active-view">
+                <h2>Недавние</h2>
+                <div class="quick-grid" id="historyGrid">
+                    <!-- История прослушивания заполняется динамически -->
+                </div>
+
+                <div class="playlist-section" style="margin-top: 30px;">
+                    <h2>С чего начать</h2>
                     <div class="track-list" id="trackList">
-                        <!-- Треки генерируются через JS -->
+                        <!-- Треки подгружаются из скрипта -->
                     </div>
                 </div>
             </section>
 
             <!-- Вкладка: Поиск -->
-            <section id="search-view" class="view-section" style="display: none;">
+            <section id="search-view" class="view-section">
                 <div class="search-box-container">
-                    <input type="text" id="searchInput" placeholder="Поиск трека или исполнителя...">
+                    <input type="text" id="searchInput" placeholder="Что хочешь включить? (например: zxcursed, shadowraze)...">
                 </div>
                 <div class="playlist-section" style="margin-top: 20px;">
                     <h2>Результаты поиска</h2>
@@ -55,10 +64,10 @@
             </section>
 
             <!-- Вкладка: Медиатека -->
-            <section id="library-view" class="view-section" style="display: none;">
+            <section id="library-view" class="view-section">
                 <div class="playlist-section">
                     <h2>Ваша медиатека</h2>
-                    <p style="color: #b3b3b3; margin-top: 10px;">Здесь будут храниться ваши сохраненные треки и плейлисты.</p>
+                    <p style="color: #b3b3b3; margin-top: 10px;">Здесь будут храниться ваши сохраненные плейлисты.</p>
                 </div>
             </section>
         </main>
