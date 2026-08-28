@@ -33,10 +33,13 @@ const volumeBar = document.getElementById('volumeBar');
 const currentTimeEl = document.getElementById('currentTime');
 const durationEl = document.getElementById('duration');
 
-// Рендер треков в список
 function renderTracks(container, listToRender) {
     container.innerHTML = '';
-    listToRender.forEach((track, index) => {
+    if (listToRender.length === 0) {
+        container.innerHTML = '<p style="color: #b3b3b3; padding: 10px;">Ничего не найдено</p>';
+        return;
+    }
+    listToRender.forEach((track) => {
         const item = document.createElement('div');
         item.classList.add('track-item');
         item.innerHTML = `
@@ -123,7 +126,7 @@ function formatTime(seconds) {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Логика переключения вкладок (Главная / Поиск / Медиатека)
+// Переключение вкладок
 const navLinks = document.querySelectorAll('.nav-menu a');
 const views = document.querySelectorAll('.view-section');
 const pageTitle = document.getElementById('pageTitle');
@@ -136,7 +139,11 @@ navLinks.forEach(link => {
 
         const targetId = link.getAttribute('data-target');
         views.forEach(view => {
-            view.style.display = view.id === targetId ? 'block' : 'none';
+            if (view.id === targetId) {
+                view.classList.add('active-view');
+            } else {
+                view.classList.remove('active-view');
+            }
         });
 
         if (targetId === 'home-view') pageTitle.textContent = 'Главная';
@@ -154,7 +161,8 @@ searchInput.addEventListener('input', (e) => {
     renderTracks(searchResultsList, filtered);
 });
 
-// Инициализация
+// Инициализация при запуске
+document.getElementById('home-view').classList.add('active-view');
 loadTrack(0);
-renderTracks(trackList, tracks);
+renderTracks(trackListEl, tracks);
 renderTracks(searchResultsList, tracks);
